@@ -50,7 +50,7 @@ EOF
     puts response.body
     res = JSON.parse(response.body)
     if res["key"]
-      url = "#{uploader}#{res['key']}"
+      puts url = "#{uploader}#{res['key']}"
       `echo #{url} | pbcopy`
       `open #{url}`
     end
