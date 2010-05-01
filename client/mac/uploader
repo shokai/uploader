@@ -1,0 +1,55 @@
+#!/usr/bin/env ruby
+# upload client for MacOSX
+require 'rubygems'
+require 'net/http'
+require 'uri'
+require 'json'
+
+# config
+uploader = 'http://localhost:4567/'
+#uploader = 'http://shokai.mag.keio.ac.jp/uploader/'
+
+
+
+if ARGV.size < 1
+  puts 'e.g. ruby upload.rb /path/to/file.png'
+  exit 1
+end
+
+file = ARGV.shift
+uploader = ARGV.shift if ARGV.size > 0
+
+open(file, 'r'){|f|
+  boundary = '----UPLOADER_BOUNDARY----'
+  file_ext = ""
+  file_ext = file.split(/\./).last if file =~ /\..+/
+
+  data = <<EOF
+--#{boundary}\r
+content-disposition: form-data; name="file_ext"\r
+\r
+#{file_ext}\r
+--#{boundary}\r
+content-disposition: form-data; name="data"\r
+\r
+#{f.read}\r
+--#{boundary}--\r
+EOF
+  
+  header = {
+    'Content-Length' => data.length.to_s,
+    'Content-type' => "multipart/form-data; boundary=#{boundary}"
+  }
+
+  up = URI.parse(uploader)
+  Net::HTTP.start(up.host, up.port) {|http|
+    response = http.post(up.path, data, header)
+    puts response.body
+    res = JSON.parse(response.body)
+    if res["key"]
+      url = "#{uploader}#{res['key']}"
+      `echo #{url} | pbcopy`
+      `open #{url}`
+    end
+  }
+}
