@@ -1,0 +1,9 @@
+simple uploader
+
+
+ruby main.rb -p 4567
+
+or
+
+thin start --config thin.yml
+
