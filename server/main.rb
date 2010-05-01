@@ -7,7 +7,6 @@ require 'rack'
 require 'json'
 
 post '/' do
-  p params
   if params["data"] and params["file_ext"]
     now = Time.now
     ext = params['file_ext']
