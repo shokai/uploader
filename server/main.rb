@@ -22,3 +22,7 @@ post '/' do
     @mes = {"message" => 'error'}.to_json
   end
 end
+
+get '/' do
+  redirect './readme'
+end
