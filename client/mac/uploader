@@ -3,6 +3,7 @@
 require 'rubygems'
 require 'net/http'
 require 'uri'
+require 'open-uri'
 require 'json'
 
 # config
@@ -12,7 +13,9 @@ uploader = 'http://localhost:4567/'
 
 
 if ARGV.size < 1
-  puts 'e.g. ruby upload.rb /path/to/file.png'
+  puts 'e.g. ruby uploader /path/to/file.png'
+  puts 'e.g. ruby uploader /path/to/file.png http://example.com/uploader/'
+  puts 'e.g. ruby uploader http://example.com/image.jpg'
   exit 1
 end
 
