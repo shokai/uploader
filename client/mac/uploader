@@ -40,7 +40,7 @@ content-disposition: form-data; name="data"\r
 EOF
   
   header = {
-    'Content-Length' => data.length.to_s,
+    'Content-Length' => data.size.to_s,
     'Content-type' => "multipart/form-data; boundary=#{boundary}"
   }
 
