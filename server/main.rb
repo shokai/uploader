@@ -11,7 +11,8 @@ post '/' do
   if params["data"] and params["file_ext"]
     now = Time.now
     ext = params['file_ext']
-    key = "#{Digest::MD5.hexdigest(now.to_s)}.#{params['file_ext']}"
+    time = "#{now.to_i}_#{now.usec}"
+    key = "#{Digest::MD5.hexdigest(time)}.#{params['file_ext']}"
     open(File.dirname(__FILE__) + "/public/#{key}", 'w+b'){|f|
       f.write(params["data"])
     }
