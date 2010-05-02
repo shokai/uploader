@@ -23,10 +23,10 @@ file = ARGV.shift
 uploader = ARGV.shift if ARGV.size > 0
 
 open(file, 'r'){|f|
+  bin = f.read
   boundary = '----UPLOADER_BOUNDARY----'
   file_ext = ""
   file_ext = file.split(/\./).last if file =~ /\..+/
-
   data = <<EOF
 --#{boundary}\r
 content-disposition: form-data; name="file_ext"\r
@@ -35,7 +35,7 @@ content-disposition: form-data; name="file_ext"\r
 --#{boundary}\r
 content-disposition: form-data; name="data"\r
 \r
-#{f.read}\r
+#{bin}\r
 --#{boundary}--\r
 EOF
   
@@ -48,11 +48,15 @@ EOF
   Net::HTTP.start(up.host, up.port) {|http|
     response = http.post(up.path, data, header)
     puts response.body
-    res = JSON.parse(response.body)
-    if res["key"]
-      puts url = "#{uploader}#{res['key']}"
-      `echo #{url} | pbcopy`
-      `open #{url}`
+    p res = JSON.parse(response.body)
+    if res['size'].to_i == bin.size
+      if res["key"]
+        puts url = "#{uploader}#{res['key']}"
+        `echo #{url} | pbcopy`
+        `open #{url}`
+      end
+    else
+      puts 'size error!'
     end
   }
 }
