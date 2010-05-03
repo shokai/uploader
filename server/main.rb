@@ -6,23 +6,45 @@ require 'sinatra/reloader' if development?
 require 'rack'
 require 'json'
 require 'digest/md5'
+require 'yaml'
+
+begin
+  @@config = YAML::load open(File.dirname(__FILE__) + '/config.yaml')
+rescue
+  puts 'config.yaml not found'
+  exit 1
+end
+p @@config
+
+def token?(token)
+  return false if !token
+  @@config['token'].each{|i|
+    return true if i == token
+  }
+  false
+end
 
 post '/' do
-  if !params["data"]
-    @mes = {"message" => 'error'}.to_json
+  p params['token']
+  if !token?(params['token'])
+    @mes = {'error' => 'token error'}.to_json
   else
-    now = Time.now
-    time = "#{now.to_i}_#{now.usec}"
-    ext = params['file_ext'].downcase if params['file_ext']
-    key = "#{Digest::MD5.hexdigest(time)}.#{ext}"
-    open(File.dirname(__FILE__) + "/public/#{key}", 'w+b'){|f|
-      f.write(params["data"])
-      @mes = {
-        'message' => 'success',
-        'key' => key,
-        'size' => params['data'].size
-      }.to_json
-    }
+    if !params['data']
+      @mes = {'error' => 'file data not found'}.to_json
+    else
+      now = Time.now
+      time = "#{now.to_i}_#{now.usec}"
+      ext = params['file_ext'].downcase if params['file_ext']
+      key = "#{Digest::MD5.hexdigest(time)}.#{ext}"
+      open(File.dirname(__FILE__) + "/public/#{key}", 'w+b'){|f|
+        f.write(params["data"])
+        @mes = {
+          'message' => 'success',
+          'key' => key,
+          'size' => params['data'].size
+        }.to_json
+      }
+    end
   end
 end
 

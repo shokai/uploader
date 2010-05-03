@@ -10,6 +10,8 @@ require 'json'
 uploader = 'http://localhost:4567/'
 #uploader = 'http://shokai.mag.keio.ac.jp/uploader/'
 
+token = 'token' # your token
+
 
 
 if ARGV.size < 1
@@ -33,6 +35,10 @@ content-disposition: form-data; name="file_ext"\r
 \r
 #{file_ext}\r
 --#{boundary}\r
+content-disposition: form-data; name="token"\r
+\r
+#{token}\r
+--#{boundary}\r
 content-disposition: form-data; name="data"\r
 \r
 #{bin}\r
@@ -49,14 +55,18 @@ EOF
     response = http.post(up.path, data, header)
     puts response.body
     p res = JSON.parse(response.body)
-    if res['size'].to_i == bin.size
-      if res['key']
-        puts url = "#{uploader}#{res['key']}"
-        `echo #{url} | pbcopy`
-        `open #{url}`
-      end
-    else
-      puts 'size error!'
+    if res['error']
+      puts res['error']
+      exit 1
+    end
+    if res['size'].to_i != bin.size
+      puts 'file size error!'
+      exit 1
+    end
+    if res['key']
+      puts url = "#{uploader}#{res['key']}"
+      `echo #{url} | pbcopy`
+      `open #{url}`
     end
   }
 }
