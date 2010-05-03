@@ -1,5 +1,14 @@
-simple uploader
+===simple uploader===
 
+1. edit server token
+
+rename "sample.config.yaml" to "config.yaml"
+
+then edit
+
+
+
+2. run server
 
 ruby main.rb -p 4567
 
@@ -7,3 +16,14 @@ or
 
 thin start --config thin.yml
 
+
+
+3. edit uploader token
+
+edit config in "client/mac/uploader"
+
+
+
+4. upload
+
+./uploader /path/to/file

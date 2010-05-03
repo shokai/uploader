@@ -6,14 +6,16 @@ require 'uri'
 require 'open-uri'
 require 'json'
 
-# config
+### config
 uploader = 'http://localhost:4567/'
 #uploader = 'http://shokai.mag.keio.ac.jp/uploader/'
 
 token = 'token' # your token
+### config end
 
 
 
+### program
 if ARGV.size < 1
   puts 'e.g. ruby uploader /path/to/file.png'
   puts 'e.g. ruby uploader /path/to/file.png http://example.com/uploader/'
