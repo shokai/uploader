@@ -34,8 +34,8 @@ post '/' do
     else
       now = Time.now
       time = "#{now.to_i}_#{now.usec}"
-      ext = params['file_ext'].downcase if params['file_ext']
-      key = "#{Digest::MD5.hexdigest(time)}.#{ext}"
+      key = "#{Digest::MD5.hexdigest(time)}"
+      key += "."+params['file_ext'].downcase if params['file_ext'] and params['file_ext'].size > 0
       open(File.dirname(__FILE__) + "/public/#{key}", 'w+b'){|f|
         f.write(params["data"])
         @mes = {
