@@ -26,7 +26,7 @@ end
 file = ARGV.shift
 uploader = ARGV.shift if ARGV.size > 0
 
-open(file, 'r'){|f|
+open(file, 'rb'){|f|
   bin = f.read
   boundary = '----UPLOADER_BOUNDARY----'
   file_ext = ''
@@ -55,7 +55,6 @@ EOF
   up = URI.parse(uploader)
   Net::HTTP.start(up.host, up.port) {|http|
     response = http.post(up.path, data, header)
-    puts response.body
     p res = JSON.parse(response.body)
     if res['error']
       puts res['error']
