@@ -25,7 +25,7 @@ uploader = ARGV.shift if ARGV.size > 0
 open(file, 'r'){|f|
   bin = f.read
   boundary = '----UPLOADER_BOUNDARY----'
-  file_ext = ""
+  file_ext = ''
   file_ext = file.split(/\./).last if file =~ /\..+/
   data = <<EOF
 --#{boundary}\r
@@ -50,7 +50,7 @@ EOF
     puts response.body
     p res = JSON.parse(response.body)
     if res['size'].to_i == bin.size
-      if res["key"]
+      if res['key']
         puts url = "#{uploader}#{res['key']}"
         `echo #{url} | pbcopy`
         `open #{url}`

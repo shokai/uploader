@@ -20,7 +20,7 @@ post '/' do
       @mes = {
         'message' => 'success',
         'key' => key,
-        'size' => params["data"].size
+        'size' => params['data'].size
       }.to_json
     }
   end
