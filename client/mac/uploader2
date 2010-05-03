@@ -1,0 +1,53 @@
+#!/usr/bin/env ruby
+# upload client for MacOSX
+require 'rubygems'
+require 'net/http'
+require 'uri'
+require 'open-uri'
+require 'json'
+require 'httpclient'
+
+### config
+uploader = 'http://localhost:4567/'
+#uploader = 'http://shokai.mag.keio.ac.jp/uploader/'
+
+token = 'token' # your token
+### config end
+
+
+
+### program
+if ARGV.size < 1
+  puts 'e.g. ruby uploader /path/to/file.png'
+  puts 'e.g. ruby uploader /path/to/file.png http://example.com/uploader/'
+  puts 'e.g. ruby uploader http://example.com/image.jpg'
+  exit 1
+end
+
+file = ARGV.shift
+uploader = ARGV.shift if ARGV.size > 0
+
+file_ext = ''
+file_ext = file.split(/\./).last if file =~ /\..+/
+
+response = HTTPClient.post(uploader, 
+                {
+                  :data => File.new(file),
+                  :ext => file_ext,
+                  :token => token
+                })
+
+p res = JSON.parse(response.body.to_s)
+if res['error']
+  puts res['error']
+  exit 1
+end
+if res['size'].to_i != bin.size
+  puts 'file size error!'
+  exit 1
+end
+if res['key']
+  puts url = "#{uploader}#{res['key']}"
+  `echo #{url} | pbcopy`
+  `open #{url}`
+end
