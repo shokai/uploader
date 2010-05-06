@@ -4,6 +4,7 @@ require 'rubygems'
 require 'sinatra'
 require 'sinatra/reloader' if development?
 require 'rack'
+require 'erb'
 require 'json'
 require 'digest/md5'
 require 'yaml'
@@ -50,5 +51,5 @@ post '/' do
 end
 
 get '/' do
-  redirect './readme'
+  erb :index
 end
