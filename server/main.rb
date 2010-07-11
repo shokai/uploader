@@ -41,7 +41,7 @@ post '/' do
         key = "#{Digest::MD5.hexdigest(time)}"
         key += "."+params[:file_ext].downcase if params[:file_ext] and params[:file_ext].size > 0
         filename = File.dirname(__FILE__) + "/public/#{key}"
-        break unless File.exists?(filename)
+        break if !File.exists?(filename)
       end
       open(filename, 'w+b'){|f|
         f.write(params[:data])
