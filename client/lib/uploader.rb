@@ -21,7 +21,7 @@ class UploadClient
       bin = f.read
       boundary = '----UPLOADER_BOUNDARY----'
       file_ext = ''
-      file_ext = file.split(/\./).last if file =~ /\..+/
+      file_ext = filename.split(/\./).last if filename =~ /\..+/
       data = <<EOF
 --#{boundary}\r
 content-disposition: form-data; name="file_ext"\r
@@ -47,7 +47,7 @@ EOF
       Net::HTTP.start(uploader.host, uploader.port) {|http|
         response = http.post(uploader.path, data, header)
         begin
-          p res = JSON.parse(response.body)
+          res = JSON.parse(response.body)
           if res['error']
             throw #{res['error']}
           end
@@ -55,7 +55,7 @@ EOF
             throw 'file size error!'
           end
           if res['key']
-            return url = "#{url}#{res['key']}"
+            return url = "#{url}#{res['key']}", res
           end
         rescue => e
           throw e
