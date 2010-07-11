@@ -9,7 +9,6 @@ require 'json'
 require 'digest/md5'
 require 'yaml'
 
-
 begin
   @@config = YAML::load open(File.dirname(__FILE__) + '/config.yaml')
 rescue
@@ -34,11 +33,17 @@ post '/' do
     if !params[:data]
       @mes = {'error' => 'file data not found'}.to_json
     else
-      now = Time.now
-      time = "#{now.to_i}_#{now.usec}"
-      key = "#{Digest::MD5.hexdigest(time)}"
-      key += "."+params[:file_ext].downcase if params[:file_ext] and params[:file_ext].size > 0
-      open(File.dirname(__FILE__) + "/public/#{key}", 'w+b'){|f|
+      filename = nil
+      key = nil
+      loop do
+        now = Time.now
+        time = "#{now.to_i}_#{now.usec}"
+        key = "#{Digest::MD5.hexdigest(time)}"
+        key += "."+params[:file_ext].downcase if params[:file_ext] and params[:file_ext].size > 0
+        filename = File.dirname(__FILE__) + "/public/#{key}"
+        break unless File.exists?(filename)
+      end
+      open(filename, 'w+b'){|f|
         f.write(params[:data])
         @mes = {
           'message' => 'success',
